@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ScheduleService } from '../services/emploie.service';
 import html2pdf from 'html2pdf.js';
-import { Location } from '@angular/common'; 
-import{PdfStorageServiceService} from '../services/pdf-storage-service.service'
+import { Location } from '@angular/common';
 
 interface TimetableSlot {
   subject: string;
@@ -15,7 +14,7 @@ interface TimetableSlot {
   templateUrl: './teacher-schedule.component.html',
   styleUrls: ['./teacher-schedule.component.scss']
 })
-export class TeacherScheduleComponent implements OnInit {
+export class TeacherScheduleComponent {
   days: string[] = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
   hours: string[] = [];
   timetable: { [hour: string]: { [day: string]: TimetableSlot | null } } = {};
@@ -35,14 +34,9 @@ export class TeacherScheduleComponent implements OnInit {
 
   constructor(
     private scheduleService: ScheduleService,
-    private location: Location ,
-    private pdfStorageService: PdfStorageServiceService  
-
+    private location: Location
   ) {}
 
-  ngOnInit(): void {}
-
-  // Méthode pour le bouton retour
   goBack(): void {
     this.location.back();
   }
@@ -66,7 +60,6 @@ export class TeacherScheduleComponent implements OnInit {
           this.errorMessage = 'Aucun cours trouvé pour cet enseignant.';
           return;
         }
-
         this.processData(data);
         this.teacherFound = true;
       },
@@ -133,37 +126,36 @@ export class TeacherScheduleComponent implements OnInit {
     return Math.abs(hash) % this.predefinedColors.length;
   }
 
-  // Modifiez la méthode downloadPDF() dans teacher-schedule.component.ts
-async downloadPDF(): Promise<void> {
-  const element = document.getElementById('teacher-timetable');
-  const fileName = `Emploi_${this.selectedTeacher}_${new Date().toISOString().slice(0,10)}.pdf`;
-  
-  const opt = {
-    margin: 10,
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+  async downloadPDF(): Promise<void> {
+    const element = document.getElementById('pdf-export-content');
+    const fileName = `Emploi_${this.selectedTeacher}_${new Date().toISOString().slice(0,10)}.pdf`;
 
-  if (element) {
-    await html2pdf().from(element).set(opt).save();
-    
-    // Enregistrer l'URL dans la base de données
-    this.pdfStorageService.savePdfInfo(
-      fileName,
-      'teacher',
-      this.selectedTeacher
-    ).subscribe({
-      next: (response) => {
-        console.log('PDF info saved:', response);
+    const opt = {
+      margin: 15,
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        scrollY: 0
       },
-      error: (err) => {
-        console.error('Error saving PDF info:', err);
+      jsPDF: { 
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: 'avoid-all' }
+    };
+
+    if (element) {
+      try {
+        await html2pdf().from(element).set(opt).save();
+      } catch (error) {
+        console.error('Erreur lors de la génération du PDF:', error);
       }
-    });
+    }
   }
-}
 
   getCellStyle(hour: string, day: string): any {
     const session = this.timetable[hour]?.[day];

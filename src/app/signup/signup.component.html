@@ -1,0 +1,84 @@
+<!-- signup-admin.component.html -->
+<div class="class-container">
+  <header>
+    <h1>Création de Compte Admin</h1>
+    <nav>
+      <a href="#">Accueil</a> / <a href="#">Administration</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <button [routerLink]="['/login']" class="btn-see-list">
+      <span class="icon-arrow">←</span> Retour à la connexion
+    </button>
+  </div>
+
+  <div class="contact-page-container">
+    <div class="contact-form">
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+        <!-- Messages d'état -->
+        <div class="alert alert-success" role="alert" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+
+        <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Prénom + Nom -->
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="custom-input-width">
+              <mat-label>Prénom Administrateur</mat-label>
+              <input matInput formControlName="firstName" required>
+              <mat-error *ngIf="adminForm.get('firstName')?.hasError('required')">
+                Champ obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="custom-input-width">
+              <mat-label>Nom Administrateur</mat-label>
+              <input matInput formControlName="lastName" required>
+              <mat-error *ngIf="adminForm.get('lastName')?.hasError('required')">
+                Champ obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+         <mat-form-field class="custom-input-width">
+          <mat-label>Email Admin</mat-label>
+          <input matInput formControlName="email" type="email" required>
+          <mat-error *ngIf="adminForm.get('email')?.hasError('required')">
+            Email requis
+          </mat-error>
+          <mat-error *ngIf="adminForm.get('email')?.hasError('email')">
+            Format email invalide
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Mot de passe (seul en dessous) -->
+        <mat-form-field class="custom-input-width">
+          <mat-label>Mot de passe Admin</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="adminForm.get('password')?.hasError('required')">
+            Mot de passe requis
+          </mat-error>
+          <mat-error *ngIf="adminForm.get('password')?.hasError('minlength')">
+            Minimum 8 caractères
+          </mat-error>
+        </mat-form-field>
+        
+
+        <button type="submit" mat-raised-button color="primary" [disabled]="!adminForm.valid" class="btn-submit">
+          <mat-icon>admin_panel_settings</mat-icon>
+          Créer le Compte Admin
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

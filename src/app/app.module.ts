@@ -46,6 +46,7 @@ import { AngularFireModule } from '@angular/fire/compat'
 import { environment } from './environments/environment';
 import { TeacherScheduleComponent } from './teacher-schedule/teacher-schedule.component';
 import { StudentEditModalComponent } from './student-edit-modal/student-edit-modal.component';
+import { SignupAdminComponent } from './signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { StudentEditModalComponent } from './student-edit-modal/student-edit-mod
     VerifyEmailComponent,
     LoginComponent,
     TeacherScheduleComponent,
-    StudentEditModalComponent
+    StudentEditModalComponent,
+    SignupAdminComponent
      ],
   imports: [
     BrowserModule,

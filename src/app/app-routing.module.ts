@@ -17,6 +17,7 @@ import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { authenticatedGuard, notAuthenticatedGuard, verifyEmailGuard } from './guards/authenticated.guard';
 import { TeacherScheduleComponent } from './teacher-schedule/teacher-schedule.component';
+import { SignupAdminComponent } from './signup/signup.component';
 
 const routes: Routes = [
   { 
@@ -44,7 +45,8 @@ const routes: Routes = [
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [notAuthenticatedGuard] },
-  { path: 'verify-email', component: VerifyEmailComponent, canActivate: [verifyEmailGuard] }, // Note: Ici aussi il faudrait corriger en "canActivate"
+  { path: 'verify-email', component: VerifyEmailComponent, canActivate: [verifyEmailGuard] }, 
+  {path:'signup',component:SignupAdminComponent}
 ];
 
 @NgModule({

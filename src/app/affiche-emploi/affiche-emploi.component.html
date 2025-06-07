@@ -1,7 +1,6 @@
 <mat-card class="emploi-container">
   <mat-card-title>📅 Emploi du Temps</mat-card-title>
 
-  <!-- Bouton Retour ajouté ici -->
   <button mat-stroked-button color="primary" (click)="goBack()" class="back-button">
     <mat-icon>arrow_back</mat-icon>
     Retour au formulaire
@@ -18,43 +17,48 @@
 
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-  <table mat-table class="mat-elevation-z8" [dataSource]="hours" *ngIf="hours.length > 0 && classefound" id="timetable-table">
-    <!-- Colonne des heures -->
-    <ng-container matColumnDef="hour">
-      <th mat-header-cell *matHeaderCellDef> Heure </th>
-      <td mat-cell *matCellDef="let hour"> {{ hour }} </td>
-    </ng-container>
+  <!-- Conteneur pour l'export PDF -->
+  <div id="pdf-export-content">
+    <!-- Titre avec le nom de la classe -->
+    <div class="class-header" *ngIf="hours.length > 0 && classefound">
+      <h2>Emploi du temps de la classe : {{ selectedClass }}</h2>
+    </div>
 
-    <!-- Colonnes des jours -->
-    <ng-container *ngFor="let day of days" [matColumnDef]="day">
-      <th mat-header-cell *matHeaderCellDef> {{ day }} </th>
-      <td mat-cell *matCellDef="let hour"
-          [ngStyle]="{'background-color': timetable?.[hour]?.[day]?.subject ? subjectColors[timetable[hour][day]?.subject || ''] : 'transparent',
-                'color': 'black',
-                'text-align': 'center',
-                'border-radius': '5px',
-                'padding': '8px'}">
-        <ng-container *ngIf="timetable?.[hour]?.[day] as session">
-          <strong>{{ session.subject }}</strong><br>
-          <small>{{ session.teacher }}</small>
-        </ng-container>
-        <ng-container *ngIf="!timetable?.[hour]?.[day]">
-          -
-        </ng-container>
-      </td>
-    </ng-container>
+    <table mat-table class="mat-elevation-z8" [dataSource]="hours" *ngIf="hours.length > 0 && classefound">
+      <!-- Colonne des heures -->
+      <ng-container matColumnDef="hour">
+        <th mat-header-cell *matHeaderCellDef> Heure </th>
+        <td mat-cell *matCellDef="let hour"> {{ hour }} </td>
+      </ng-container>
 
-    <!-- En-tête -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Colonnes des jours -->
+      <ng-container *ngFor="let day of days" [matColumnDef]="day">
+        <th mat-header-cell *matHeaderCellDef> {{ day }} </th>
+        <td mat-cell *matCellDef="let hour"
+            [ngStyle]="{'background-color': timetable?.[hour]?.[day]?.subject ? subjectColors[timetable[hour][day]?.subject || ''] : 'transparent',
+                  'color': 'black',
+                  'text-align': 'center',
+                  'border-radius': '5px',
+                  'padding': '8px'}">
+          <ng-container *ngIf="timetable?.[hour]?.[day] as session">
+            <strong>{{ session.subject }}</strong><br>
+            <small>{{ session.teacher }}</small>
+          </ng-container>
+          <ng-container *ngIf="!timetable?.[hour]?.[day]">
+            -
+          </ng-container>
+        </td>
+      </ng-container>
 
-    <!-- Lignes -->
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
 
   <div class="action-buttons" *ngIf="hours.length > 0 && classefound">
     <button mat-raised-button color="accent" (click)="downloadPDF()">
       <mat-icon>picture_as_pdf</mat-icon>
-      Imprimer en PDF
+      Exporter en PDF
     </button>
   </div>
 </mat-card>
